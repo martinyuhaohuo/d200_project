@@ -129,7 +129,8 @@ def create_ahead_lag(dataframe, target, max_ahead, max_lag):
     for i in range(1, max_ahead + 1):
         new_frame[f"{target}_{i}H"] = new_frame[target].shift(-i)
         targets.append(f"{target}_{i}H")
-    for i in range(1, max_lag + 1):
-        for column in dataframe.columns:
-            new_frame[f"{column}_{i}L"] = new_frame[column].shift(i)
+    if max_lag != 0:
+        for i in range(1, max_lag + 1):
+            for column in dataframe.columns:
+                new_frame[f"{column}_{i}L"] = new_frame[column].shift(i)
     return new_frame, targets

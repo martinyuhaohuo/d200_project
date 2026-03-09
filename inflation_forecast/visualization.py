@@ -19,7 +19,7 @@ for period in recession_period:
     i += 1
 
 
-def visualize_series(dataframe: pd.DataFrame, columns: list, y_label: str, y_min: float, y_max: float, date = None) -> None:
+def visualize_series(dataframe: pd.DataFrame, columns: list, y_label: str, y_min: float, y_max: float, date = None, recession = True) -> None:
 
     fig = plt.figure(figsize = (10,5),dpi = 150)
     ax = plt.axes()
@@ -38,5 +38,22 @@ def visualize_series(dataframe: pd.DataFrame, columns: list, y_label: str, y_min
     plt.ylim(ymin = y_min, ymax = y_max)
 
     # plot recession periods
-    for period in recession_period:
-        plt.axvspan(period[0],period[1], color = "grey", alpha = 0.2)
+    if recession:
+        for period in recession_period:
+            plt.axvspan(period[0],period[1], color = "grey", alpha = 0.2)
+
+
+def visualize_loss(train_loss_list, test_loss_list, error_metric = "MSE"):
+    fig = plt.figure(figsize = (10,5),dpi = 150)
+    plt.plot(range(len(train_loss_list)), train_loss_list, label="Train MSE", color="red")
+    plt.plot(range(len(test_loss_list)), test_loss_list, label="Test MSE", color="blue")
+    plt.xlabel(f"{error_metric} Loss")
+    plt.ylabel("Epochs")
+    plt.legend()
+    plt.show()
+
+
+def visualize_predict(prediction, true_value, lag, FRED_dataframe):
+    Y_date = true_value.merge(FRED_dataframe["sasdate"], left_index=True, right_index=True, how="left")
+    Y_date[f"CPIAUCSL_{lag}HP"] = prediction[lag - 1].to_list()
+    visualize_series(Y_date, [f"CPIAUCSL_{lag}H", f"CPIAUCSL_{lag}HP"], "Scaled Inflation", -1, 1, recession = False)

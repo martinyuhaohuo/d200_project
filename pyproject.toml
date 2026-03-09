@@ -24,7 +24,9 @@ dependencies = [
     "numpy",
     "pandas",
     "matplotlib",
-    "scikit-learn"
+    "scikit-learn",
+    "torch", 
+    "torchvision"
 ]
 
 [tool.setuptools.packages.find]

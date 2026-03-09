@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer, SimpleImputer
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -33,6 +33,7 @@ def create_fe_pipeline():
         [
             ("missing_impute", IterativeImputer(missing_values = np.nan, random_state = 78392)),
             ("min_max_scale", MinMaxScaler(feature_range=(-1,1)))
+            # ("standard_scale", StandardScaler())
         ]
     )
     
