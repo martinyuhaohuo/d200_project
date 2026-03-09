@@ -55,5 +55,5 @@ def visualize_loss(train_loss_list, test_loss_list, error_metric = "MSE"):
 
 def visualize_predict(prediction, true_value, lag, FRED_dataframe):
     Y_date = true_value.merge(FRED_dataframe["sasdate"], left_index=True, right_index=True, how="left")
-    Y_date[f"CPIAUCSL_{lag}HP"] = prediction[lag - 1].to_list()
-    visualize_series(Y_date, [f"CPIAUCSL_{lag}H", f"CPIAUCSL_{lag}HP"], "Scaled Inflation", -1, 1, recession = False)
+    Y_date[f"CPIAUCSL_{lag}HP"] = prediction[0].to_list()
+    visualize_series(Y_date, [f"CPIAUCSL_{lag}H", f"CPIAUCSL_{lag}HP"], "Scaled Inflation", -2.5, 1, recession = False)
