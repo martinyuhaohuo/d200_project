@@ -37,7 +37,7 @@ def y_fe_pipeline():
     return fe_pipeline
 
 
-def create_ahead_lag(y_train, x_train, y_test, x_test, target_ahead, max_lag, include_target = False):
+def create_ahead_lag(y_train, x_train, y_test, x_test, target_ahead, max_lag, include_target = False, target_lag = 0):
 
     x_dataframe = pd.concat([x_train, x_test], axis=0)
     y_dataframe = pd.concat([y_train, y_test], axis=0)
@@ -47,21 +47,31 @@ def create_ahead_lag(y_train, x_train, y_test, x_test, target_ahead, max_lag, in
 
     # create ahead prediction target
     new_frame[f"{target}_{target_ahead}H"] = new_frame[target].shift(-target_ahead)
-    # create lagged predictor
-    if max_lag != 0:
+
+    # if max_lag > 0, create lagged predictor
+    if max_lag > 0:
         for i in range(1, max_lag + 1):
             for column in dataframe.columns:
-                if include_target:
+                if column != target:
                     new_frame[f"{column}_{i}L"] = new_frame[column].shift(i)
-                else:
-                    if column != target:
-                        new_frame[f"{column}_{i}L"] = new_frame[column].shift(i)
+    # if max_lag = -1, do not include any exogenous variable in X
+    if max_lag == -1:
+        for column in dataframe.columns:
+            if column != target:
+                new_frame = new_frame.drop(columns = [column])
+    # if include_target, add lags of target variable
+    if include_target:
+        for i in range(0, target_lag + 1):
+            new_frame[f"{target}_{i}L"] = new_frame[target].shift(i)
     
+    # drop rows with NA values due to lagging / creating ahead
     lagged_train_set = new_frame.loc[x_train.index]
-    lagged_train_set = lagged_train_set.iloc[max_lag:]
+    lag = max(max_lag, target_lag)
+    lagged_train_set = lagged_train_set.iloc[lag:]
     lagged_test_set = new_frame.loc[x_test.index]
     lagged_test_set = lagged_test_set.iloc[:-target_ahead]
 
+    # split complete dataset back to train and test set
     y_train = lagged_train_set[[f"{target}_{target_ahead}H"]]
     x_train = lagged_train_set.drop(columns = [f"{target}_{target_ahead}H", target])
     y_test = lagged_test_set[[f"{target}_{target_ahead}H"]]

@@ -23,7 +23,7 @@ def visualize_series(dataframe: pd.DataFrame, columns: list, y_label: str, y_min
 
     fig = plt.figure(figsize = (10,5),dpi = 150)
     ax = plt.axes()
-    color_shape = [["red", "-"], ["blue", "dotted"], ["orange", "--"]]
+    color_shape = [["red", "-"], ["blue", "dotted"], ["orange", "dotted"], ["green", "dotted"]]
 
     # plot the series
     if date is None:
@@ -47,13 +47,14 @@ def visualize_loss(train_loss_list, test_loss_list, error_metric = "MSE"):
     fig = plt.figure(figsize = (10,5),dpi = 150)
     plt.plot(range(len(train_loss_list)), train_loss_list, label="Train MSE", color="red")
     plt.plot(range(len(test_loss_list)), test_loss_list, label="Test MSE", color="blue")
-    plt.xlabel(f"{error_metric} Loss")
-    plt.ylabel("Epochs")
+    plt.ylabel(f"{error_metric} Loss")
+    plt.xlabel("Epochs")
     plt.legend()
     plt.show()
 
 
 def visualize_predict(prediction, true_value, lag, FRED_dataframe):
+    y_name = true_value.columns[0]
     Y_date = true_value.merge(FRED_dataframe["sasdate"], left_index=True, right_index=True, how="left")
-    Y_date[f"CPIAUCSL_{lag}HP"] = prediction[0].to_list()
-    visualize_series(Y_date, [f"CPIAUCSL_{lag}H", f"CPIAUCSL_{lag}HP"], "Scaled Inflation", -2.5, 1, recession = False)
+    Y_date[f"CPIAUCSL_{lag}HP"] = prediction
+    visualize_series(Y_date, [y_name, f"CPIAUCSL_{lag}HP"], "Scaled Inflation", -1, 1, recession = False)

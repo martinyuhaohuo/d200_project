@@ -63,12 +63,10 @@ def report_missings(dataframe: pd.DataFrame) -> str:
     output = ""
     i = 0
     for col_name, dtype in dataframe.dtypes.items():
-
         missing_count = dataframe[col_name].isna().sum()
         missing_pct = missing_count / dataframe.shape[0]
         missing_count_str = f"Mis_count: {missing_count}"
         missing_pct_str = f"Mis_pct: {missing_pct}"
-
         output += (
             str(i)
             + " " * (5 - len(str(i)))
@@ -85,7 +83,6 @@ def report_missings(dataframe: pd.DataFrame) -> str:
             + "\n"
         )
         i += 1
-
     return output
 
 
