@@ -1,5 +1,5 @@
 ## d200_project
-The D200 project on inflation forecasting using neural networks
+Project Name: Forecasting Inflation in a Big Data Setting Using Neural Networks
 
 ## Installation
 1. cd project-root-dir
