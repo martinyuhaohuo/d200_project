@@ -1,26 +1,33 @@
 import numpy as np
 import pandas as pd
 
-def stationary_transform(raw_data : pd.DataFrame, transform_table : pd.DataFrame) -> pd.DataFrame:
-    """
-    This function conduct necessary transformations needed to make a series stationary (depsite for CPI)
 
-    Parameters:
-    -----------
+def stationary_transform(
+        raw_data : pd.DataFrame, 
+        transform_table : pd.DataFrame
+        ) -> pd.DataFrame:
+    """
+    This function conducts necessary transformations needed to make a series 
+    stationary (except for CPI and PCEPI)
+
+    Parameters
+    ----------
     raw_data : pd.DataFrame
         the raw dataframe
     transform_table : pd.DataFrame
         a table that maps column name to transform code
 
-    Returns:
-    --------
+    Returns
+    -------
     pd.DataFrame
-        a transformed dataframe with stationary time series (despite CPI and PCEPI)
+        a transformed dataframe with stationary time series 
+        (except for CPI and PCEPI)
     """
     transformed = raw_data.copy(deep=True)
     for column in raw_data.columns:
         if column == "CPIAUCSL" or column == "PCEPI":
-            # for CPI and PCEPI, return first difference of logged value (inflation rate)
+            # for CPI and PCEPI, return first difference of logged value 
+            # (inflation rate)
             transformed[column] = np.log(raw_data[column]).diff()
         elif transform_table.loc[0,column] == 1:
             # transform code 1: return raw value
@@ -86,7 +93,25 @@ def report_missings(dataframe: pd.DataFrame) -> str:
     return output
 
 
-def remove_missing_col(dataframe, threshold = 0.1):
+def remove_missing_col(
+        dataframe: pd.DataFrame, 
+        threshold: float = 0.1
+        ) -> pd.DataFrame:
+    """
+    Remove columns with missing value greater than the specified threshold
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        the input dataframe
+    threshold : float, default = 0.1
+        the maximum missing value percentage allowed
+
+    Returns
+    -------
+    pd.DataFrame
+        the dataframe with missing-value columns removed
+    """
     new_frame = dataframe.copy(deep = True)
     remov_columns = list()
     for column in dataframe.columns:
@@ -98,15 +123,18 @@ def remove_missing_col(dataframe, threshold = 0.1):
     return new_frame
 
 
-def sample_split(dataframe: pd.DataFrame, train_pct: float) -> tuple[pd.DataFrame, pd.DataFrame]:
+def sample_split(
+        dataframe: pd.DataFrame, 
+        train_pct: float
+        ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Split the dataset intwo a training set and a test set
+    Split the dataset into a training set and a test set
 
     Parameters
     ----------
     dataframe : pd.DataFrame
         the input dataframe
-    train_pc : float
+    train_pct : float
         the percentage of training sample
 
     Returns
@@ -118,5 +146,3 @@ def sample_split(dataframe: pd.DataFrame, train_pct: float) -> tuple[pd.DataFram
     train_frame = dataframe[:train_obs_num]
     test_frame = dataframe[train_obs_num:]
     return train_frame, test_frame
-
-

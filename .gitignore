@@ -1,9 +1,3 @@
-# Raw data file
-data/minutes/*.txt
-data/speeches/bm/*.txt
-data/speeches/dgov/*.txt
-data/speeches/gov/*.txt
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
